@@ -9,17 +9,17 @@ window.onload = function () {
   hideCategorySelectRow();
   hideProductListingTable();
 
-  // Go and populate the categories dropdown
-  populateCategories();
-
   searchSelect.onchange = onSearchSelectChange;
   categorySelect.onchange = onCategorySelectChange;
 };
 
 // EVENT HANDLER: Do this when Search type changes
 function onSearchSelectChange() {
-  // if all, then getAllProductsFromApi
-  if (searchSelect.value === "3") {
+  if (searchSelect.value === "2") {
+    showCategorySelectRow();
+    hideProductListingTable();
+  } else if (searchSelect.value === "3") {
+    hideCategorySelectRow();
     showProductListingTable();
     showAllProducts();
   } else {
@@ -28,7 +28,7 @@ function onSearchSelectChange() {
   }
 }
 
-// EVENT HANDLER: Do this when Category value changes (This can only happen when the category row is shown/search type is by category)
+// EVENT HANDLER: Do this when Category value changes
 function onCategorySelectChange() {
   const categoryId = categorySelect.value;
 
@@ -41,56 +41,28 @@ function onCategorySelectChange() {
 }
 
 function showCategorySelectRow() {
-  categorySearch.style.display = "block";
+  categorySelect.style.display = "block";
 }
 
 function hideCategorySelectRow() {
-  categorySearch.style.display = "none";
+  categorySelect.style.display = "none";
 }
 
 function showProductListingTable() {
-  ViewAllTable.style.display = "block";
+  productListingTable.style.display = "block";
 }
 
 function hideProductListingTable() {
-  ViewAllTable.style.display = "none";
+  productListingTable.style.display = "none";
 }
-
-// HELPER FUNCTION: Populate the Categories Dropdown with all possible categories from the API
-function populateCategories() {
-  fetch("http://localhost:8081/api/categories")
-    .then(response => response.json())
-    .then(categories => {
-      for (let category of categories) {
-        let catOption = document.createElement("option");
-        catOption.text = category.name;
-        catOption.value = category.categoryId;
-
-        categorySelect.appendChild(catOption);
-        console.log(catOption);
-      }
-    });
-}
-
-// HELPER FUNCTION: Show products in the selected category
-function showProductsInCategory(categoryId) {
-  fetch(`http://localhost:8081/api/categories/${categoryId}`)
-    .then(response => response.json())
-    .then(data => {
-      populateProducts(data);
-    });
-}
-
-// HELPER FUNCTION: Show all products
 function showAllProducts() {
-  fetch("http://localhost:8081/api/products")
-    .then(response => response.json())
-    .then(products => {
-      populateProducts(products);
-      console.log(products);
-    });
-}
-
+    fetch("http://localhost:8081/api/products")
+      .then(response => response.json())
+      .then(products => {
+        populateProducts(products);
+        console.log(products);
+      });
+  }
 // HELPER FUNCTION: Populate the products in the table
 function populateProducts(productsArray) {
   productListingTableBody.innerHTML = "";
